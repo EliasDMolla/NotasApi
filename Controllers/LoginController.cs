@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using NotasApi.Domain.Models;
 using NotasApi.Services;
+using System;
 
 namespace NotasApi.Controllers
 {
@@ -21,17 +22,20 @@ namespace NotasApi.Controllers
         }
 
         [HttpPost]
-        public Usuario Login([FromBody] Usuario usuario)
+        public Response<Usuario> Login([FromBody] Usuario usuario)
         {
+            var response = new Response<Usuario>();
             try
             {
-                var response = _loginService.ValidarLogin(usuario);
+                response = _loginService.ValidarLogin(usuario);
 
                 return response;
             }
-            catch (System.Exception)
+            catch (Exception ex)
             {
-                throw;
+                response.MsgeError = ex.Message;
+
+                return response;
             }
         }
     } 
